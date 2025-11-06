@@ -206,7 +206,6 @@ class LearningRateMonitor(Callback):
 
 class ProgressLogger(Callback):
     """训练进度日志回调"""
-
     def __init__(self, config: Dict[str, Any]):
         self.config = config
         self.log_interval = config["training"].get("log_interval", 50)
