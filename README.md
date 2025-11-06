@@ -19,12 +19,15 @@ pip install -r requirements.txt
 2. 准备数据集
 
 将数据集放置在自定目录下，修改配置文件中的数据路径，自定义编写数据加载器并注册在init.py中，在configs中进行配置。
+
 3. 定义模型
 
 在models目录下定义模型，并注册在init.py中，在configs中进行配置。
+
 4. 配置训练参数
 
 修改configs文件中experiments的训练参数，如学习率、批量大小、训练轮数等。
+
 4. 运行训练脚本
 ```bash
 python train.py --config config.yaml
