@@ -1,0 +1,52 @@
+# 实验配置
+experiment:
+  name: "resnet50_mnist"
+  output_dir: "./outputs/exp1"
+  seed: 42
+
+# 模型配置
+model:
+  _file_: "../models/resnet.yaml"  # 引用其他配置文件
+
+# 数据配置
+data:
+  _file_: "../datasets/mnist.yaml"
+
+# 优化器配置
+optimizer:
+  name: "AdamW"
+  params:
+    lr: 0.001
+    weight_decay: 0.01
+
+# 学习率调度器
+scheduler:
+  name: "CosineAnnealingLR"
+  params:
+    T_max: 100
+
+# 训练配置
+training:
+  epochs: 100
+  mixed_precision: "fp16"
+  gradient_accumulation_steps: 1
+  save_every: 10
+  eval_every: 1
+  early_stopping_patience: 10
+  log_with: 'tensorboard'
+#  log_with:
+#    name: "TensorboardCustomTracker"
+#    params:
+#      run_name: "resnet50_mnist"
+#      logging_dir: './outputs/exp1/logs'
+# 损失函数配置
+loss:
+  name: "CrossEntropyLoss"
+  params:
+# 回调函数
+callbacks:
+  - "ModelCheckpoint"
+  - "EarlyStopping"
+  - "LearningRateMonitor"
+  - "ProgressLogger"
+  - "MetricsCallback"

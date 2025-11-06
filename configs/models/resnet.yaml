@@ -1,0 +1,7 @@
+name: "ResNet"
+params:
+#  arch: "resnet50"
+#  pretrained: False
+  weights: null
+#  num_classes: 10
+#  dropout: 0.1

@@ -1,0 +1,7 @@
+name: "CIFAR10"
+params:
+  data_dir: "./data/cifar10"
+  batch_size: 128
+  num_workers: 4
+  validation_split: 0.1
+  augment: true
