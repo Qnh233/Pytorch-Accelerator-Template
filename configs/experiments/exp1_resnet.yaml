@@ -3,6 +3,7 @@ experiment:
   name: "resnet50_mnist"
   output_dir: "./outputs/exp1"
   seed: 42
+  gpus: 1
 
 # 模型配置
 model:
