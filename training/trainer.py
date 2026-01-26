@@ -1,4 +1,5 @@
 from accelerate import Accelerator
+import os
 import torch
 import torch.nn as nn
 from typing import Dict, Any, List, Union
@@ -122,11 +123,16 @@ class AccelerateTrainer:
 
         # 数据加载器
         data_config = self.config["data"]["data_loader_params"]
+        # Default num_workers to CPU count if not specified
+        num_workers = data_config.get("num_workers")
+        if num_workers is None:
+            num_workers = os.cpu_count() or 1
+
         train_loader = torch.utils.data.DataLoader(
             train_dataset,
             batch_size=data_config["batch_size"],
             shuffle=True,
-            num_workers=data_config.get("num_workers", 0),
+            num_workers=num_workers
             worker_init_fn=self._seed_worker,
             generator=g
         )
@@ -134,7 +140,7 @@ class AccelerateTrainer:
             val_dataset,
             batch_size=data_config["batch_size"],
             shuffle=False,
-            num_workers=data_config.get("num_workers", 0),
+            num_workers=num_workers
             worker_init_fn=self._seed_worker,
             generator=g
         )
