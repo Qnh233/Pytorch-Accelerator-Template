@@ -1,6 +1,8 @@
 from torch.utils.data import Dataset
 from torchvision import datasets, transforms
+from utils.registry import DATASETS
 
+@DATASETS.register
 class CIFAR10Dataset(Dataset):
     def __init__(self, split="train", batch_size=64, num_workers=4):
         # 注意：这里我们只是示例，实际可能要从配置中读取更多参数

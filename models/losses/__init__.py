@@ -1,8 +1,15 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from utils.registry import LOSSES
 
+# Register standard PyTorch losses
+LOSSES.register(nn.CrossEntropyLoss, "CrossEntropyLoss")
+LOSSES.register(nn.MSELoss, "MSELoss")
+LOSSES.register(nn.L1Loss, "L1Loss")
+LOSSES.register(nn.BCEWithLogitsLoss, "BCEWithLogitsLoss")
 
+@LOSSES.register
 class FocalLoss(nn.Module):
     def __init__(self, alpha=1, gamma=2, reduction='mean'):
         super(FocalLoss, self).__init__()
@@ -22,7 +29,7 @@ class FocalLoss(nn.Module):
         else:
             return focal_loss
 
-
+@LOSSES.register
 class DiceLoss(nn.Module):
     def __init__(self, smooth=1.0):
         super(DiceLoss, self).__init__()
@@ -40,7 +47,7 @@ class DiceLoss(nn.Module):
 
         return 1 - dice
 
-
+@LOSSES.register
 class CombinedLoss(nn.Module):
     def __init__(self, alpha=0.5, beta=0.5):
         super(CombinedLoss, self).__init__()
@@ -55,25 +62,8 @@ class CombinedLoss(nn.Module):
         return self.alpha * ce_loss + self.beta * dice_loss
 
 
-# 损失函数注册表
-def get_loss(name: str):
-    loss_registry = {
-        "CrossEntropyLoss": nn.CrossEntropyLoss,
-        "MSELoss": nn.MSELoss,
-        "L1Loss": nn.L1Loss,
-        "FocalLoss": FocalLoss,
-        "DiceLoss": DiceLoss,
-        "CombinedLoss": CombinedLoss,
-    }
-
-    if name not in loss_registry:
-        raise ValueError(f"Unknown loss: {name}. Available: {list(loss_registry.keys())}")
-
-    return loss_registry[name]
-
-
 def create_loss(loss_config: dict):
     """根据配置创建损失函数"""
-    loss_class = get_loss(loss_config["name"])
+    loss_class = LOSSES.get(loss_config["name"])
     params = loss_config.get("params", {}) or {}  # 确保params不会是None
     return loss_class(**params)
