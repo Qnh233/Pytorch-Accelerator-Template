@@ -181,11 +181,12 @@ class AccelerateTrainer:
             self.accelerator.backward(loss)
             self.optimizer.step()
 
-            total_loss += loss.item()
+            loss_item = loss.item()
+            total_loss += loss_item
             self.global_step += 1
             # 记录日志
             if self.accelerator.is_main_process:
-                self.accelerator.log({"train_loss": loss.item()})
+                self.accelerator.log({"train_loss": loss_item})
 
             # 调用batch结束回调
             for callback in self.callbacks:
