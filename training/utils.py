@@ -3,10 +3,15 @@ import torch
 # import scipy.ndimage as nd
 
 
+_device = None
+
+
 def get_device():
-    use_cuda = torch.cuda.is_available()
-    device = torch.device("cuda:0" if use_cuda else "cpu")
-    return device
+    global _device
+    if _device is None:
+        use_cuda = torch.cuda.is_available()
+        _device = torch.device("cuda:0" if use_cuda else "cpu")
+    return _device
 
 
 def one_hot_embedding(labels, num_classes=10):
