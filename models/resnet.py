@@ -1,5 +1,7 @@
 import torch.nn as nn
+from utils.registry import MODELS
 
+@MODELS.register
 class ResNet(nn.Module):
     def __init__(self, num_layers=50, weights=None):
         super().__init__()

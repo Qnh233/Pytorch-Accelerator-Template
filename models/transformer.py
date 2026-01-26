@@ -1,5 +1,7 @@
 import torch.nn as nn
+from utils.registry import MODELS
 
+@MODELS.register
 class Transformer(nn.Module):
     def __init__(self, vocab_size=1000, hidden_size=768, num_layers=6, num_heads=8):
         super().__init__()
