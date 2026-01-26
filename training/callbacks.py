@@ -3,7 +3,7 @@ import torch
 import numpy as np
 from typing import Dict, Any, Optional
 import json
-
+from utils.registry import CALLBACKS
 
 class Callback:
     """回调基类"""
@@ -31,6 +31,8 @@ class Callback:
         if hasattr(trainer.accelerator, 'log_records'):
             return trainer.accelerator.log_records
         return {}
+
+@CALLBACKS.register
 class ModelCheckpoint(Callback):
     """模型检查点回调"""
 
@@ -111,7 +113,7 @@ class ModelCheckpoint(Callback):
         with open(os.path.join(self.save_dir, "checkpoints", f"{name}_info.json"), 'w') as f:
             json.dump(info, f, indent=2)
 
-
+@CALLBACKS.register
 class EarlyStopping(Callback):
     """早停回调"""
 
@@ -168,7 +170,7 @@ class EarlyStopping(Callback):
 
         return False
 
-
+@CALLBACKS.register
 class LearningRateMonitor(Callback):
     """学习率监控回调"""
 
@@ -203,7 +205,7 @@ class LearningRateMonitor(Callback):
 
         return None
 
-
+@CALLBACKS.register
 class ProgressLogger(Callback):
     """训练进度日志回调"""
     def __init__(self, config: Dict[str, Any]):
@@ -233,7 +235,7 @@ class ProgressLogger(Callback):
             metrics_str.append(f"验证损失: {val_loss:.4f}")
             print(f"   📈 指标: {', '.join(metrics_str)}")
 
-
+@CALLBACKS.register
 class MetricsCallback(Callback):
 
     def __init__(self, config: Dict[str, Any]):
@@ -264,16 +266,4 @@ class MetricsCallback(Callback):
 
 # 回调函数注册表
 def get_callback(name: str):
-    callback_registry = {
-        "ModelCheckpoint": ModelCheckpoint,
-        "EarlyStopping": EarlyStopping,
-        "LearningRateMonitor": LearningRateMonitor,
-        "ProgressLogger": ProgressLogger,
-        "MetricsCallback": MetricsCallback,
-    }
-
-
-    if name not in callback_registry:
-        raise ValueError(f"Unknown callback: {name}. Available: {list(callback_registry.keys())}")
-
-    return callback_registry[name]
+    return CALLBACKS.get(name)
