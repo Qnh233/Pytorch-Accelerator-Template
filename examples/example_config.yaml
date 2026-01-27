@@ -1,0 +1,46 @@
+experiment:
+  name: "example_resnet_cls"
+  output_dir: "./outputs/example_resnet"
+  seed: 42
+
+data:
+  name: "MNISTDataset"
+  data_params:
+    data_dir: "./data/mnist"
+  data_loader_params:
+    batch_size: 64
+    num_workers: 4
+
+model:
+  name: "ImageClassifier" # Top-level Architecture
+
+  backbone:
+    type: "ResNet"
+    depth: 18
+    pretrained: false # MNIST is 1 channel, standard weights expect 3
+    # Note: Our ResNet impl takes 1 channel in conv1?
+    # Let's check ResNet impl. It loads standard resnet which is 3 channels.
+    # We might need to handle channel adaptation in backbone or transform.
+    # For now, let's assume standard behavior.
+
+  head:
+    type: "ClassificationHead"
+    in_channels: 512 # ResNet18 output
+    num_classes: 10
+
+optimizer:
+  name: "Adam"
+  params:
+    lr: 0.001
+
+training:
+  epochs: 5
+  eval_every: 1
+  mixed_precision: "no"
+  log_grad_norm: true
+
+loss:
+  name: "CrossEntropyLoss"
+
+callbacks:
+  - name: "ProgressLogger"

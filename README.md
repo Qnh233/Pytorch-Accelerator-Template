@@ -12,17 +12,23 @@ A trainer template based on Pytorch and Accelerator
 - 支持GPU加速，提升训练速度
 
 # 快速开始
+
+## 📚 文档
+- [开发指南 (Developer Guide)](docs/DEVELOPER_GUIDE.md): 如何添加新模型/数据集及注册机制说明。
+- [最佳实践检查清单 (Checklist)](CHECKLIST.md): 训练前必读的避坑指南。
+
 1. 安装依赖
 ```bash
 pip install -r requirements.txt
 ```
 2. 准备数据集
 
-将数据集放置在自定目录下，修改配置文件中的数据路径，自定义编写数据加载器并注册在init.py中，在configs中进行配置。
+将数据集放置在自定目录下，修改配置文件中的数据路径。
+**新特性**: 无需修改 `init.py`，只需在 `datasets/` 下创建文件并使用 `@DATASETS.register` 装饰器即可。
 
 3. 定义模型
 
-在models目录下定义模型，并注册在init.py中，在configs中进行配置。
+在 `models/` 目录下创建新文件，定义模型类并使用 `@MODELS.register` 装饰器。
 
 4. 配置训练参数
 
