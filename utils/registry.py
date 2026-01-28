@@ -59,6 +59,8 @@ MODELS = Registry("models") # Top-level architectures (e.g., ImageClassifier, En
 BACKBONES = Registry("backbones")
 HEADS = Registry("heads")
 NECKS = Registry("necks") # For future expansion
+ADAPTERS = Registry("adapters") # Input adapters (Dict -> Tensor)
+STEMS = Registry("stems") # Input stems (Channel mapping)
 
 DATASETS = Registry("datasets")
 LOSSES = Registry("losses")
