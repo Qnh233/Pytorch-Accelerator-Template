@@ -55,7 +55,11 @@ class Registry:
 
 
 # Define global registries
-MODELS = Registry("models")
+MODELS = Registry("models") # Top-level architectures (e.g., ImageClassifier, EncoderDecoder)
+BACKBONES = Registry("backbones")
+HEADS = Registry("heads")
+NECKS = Registry("necks") # For future expansion
+
 DATASETS = Registry("datasets")
 LOSSES = Registry("losses")
 CALLBACKS = Registry("callbacks")

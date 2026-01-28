@@ -1,6 +1,6 @@
 experiment:
-  name: "example_mnist"
-  output_dir: "./outputs/example_mnist"
+  name: "example_resnet_cls"
+  output_dir: "./outputs/example_resnet"
   seed: 42
 
 data:
@@ -12,10 +12,21 @@ data:
     num_workers: 4
 
 model:
-  name: "ResNet"
-  params:
-    num_layers: 18 # Just an example param
-    weights: null
+  name: "ImageClassifier" # Top-level Architecture
+
+  backbone:
+    type: "ResNet"
+    depth: 18
+    pretrained: false # MNIST is 1 channel, standard weights expect 3
+    # Note: Our ResNet impl takes 1 channel in conv1?
+    # Let's check ResNet impl. It loads standard resnet which is 3 channels.
+    # We might need to handle channel adaptation in backbone or transform.
+    # For now, let's assume standard behavior.
+
+  head:
+    type: "ClassificationHead"
+    in_channels: 512 # ResNet18 output
+    num_classes: 10
 
 optimizer:
   name: "Adam"
@@ -26,9 +37,6 @@ training:
   epochs: 5
   eval_every: 1
   mixed_precision: "no"
-  save_every: 2
-  monitor_metric: "val_accuracy"
-  monitor_mode: "max"
   log_grad_norm: true
 
 loss:

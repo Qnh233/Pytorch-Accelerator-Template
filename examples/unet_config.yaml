@@ -1,0 +1,46 @@
+experiment:
+  name: "demo_unet_segmentation"
+  output_dir: "./outputs/demo_unet"
+  seed: 42
+
+data:
+  # Using FakeDataset for demo purpose, assuming it returns segmentation masks if configured
+  # But FakeDataset currently returns labels.
+  # We might need a FakeSegmentationDataset or modify FakeDataset.
+  name: "FakeDataset"
+  data_params:
+    size: 20
+  data_loader_params:
+    batch_size: 4
+    num_workers: 0
+
+model:
+  name: "EncoderDecoder" # The top-level architecture
+
+  backbone:
+    type: "UNetEncoder"
+    in_channels: 1 # Assuming grayscale input (1 channel) for FakeDataset?
+    # FakeDataset returns (1, 28, 28). So 1 channel.
+    features: [64, 128] # Smaller features for demo
+
+  decode_head:
+    type: "UNetDecoderHead"
+    features: [128, 64] # Must match backbone reverse
+    num_classes: 2 # Binary mask (background/foreground)
+
+optimizer:
+  name: "Adam"
+  params:
+    lr: 0.001
+
+training:
+  epochs: 2
+  eval_every: 1
+  mixed_precision: "no"
+  log_grad_norm: true
+
+loss:
+  name: "CrossEntropyLoss" # Segmentation usually uses CrossEntropy per pixel
+
+callbacks:
+  - name: "ProgressLogger"
