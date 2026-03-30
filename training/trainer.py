@@ -132,7 +132,8 @@ class AccelerateTrainer:
             train_dataset,
             batch_size=data_config["batch_size"],
             shuffle=True,
-            num_workers=num_workers
+            num_workers=num_workers,
+            pin_memory=data_config.get("pin_memory", True),
             worker_init_fn=self._seed_worker,
             generator=g
         )
@@ -140,7 +141,8 @@ class AccelerateTrainer:
             val_dataset,
             batch_size=data_config["batch_size"],
             shuffle=False,
-            num_workers=num_workers
+            num_workers=num_workers,
+            pin_memory=data_config.get("pin_memory", True),
             worker_init_fn=self._seed_worker,
             generator=g
         )
